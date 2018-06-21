@@ -1,18 +1,25 @@
 from setuptools import setup, find_packages
 
+import fabkit
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='fabkit',
-    version='0.1.0.dev2',
+    version=fabkit.__version__,
     packages=find_packages(),
-    license='MIT',
+    license=fabkit.__licence__,
     install_requires=[
         "fabric3>=1.7.0",
     ],
     description='Group of tools extending fabric v1.x tasks',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/karolhor/fabkit",
     python_requires='>=3.6',
-    zip_safe=False,
-    author="Karol Horowski",
+    zip_safe=True,
+    author=fabkit.__author__,
     author_email="karol.hor@gmail.com",
     classifiers=[
         'Development Status :: 3 - Alpha',
