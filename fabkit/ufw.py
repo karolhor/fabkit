@@ -20,16 +20,16 @@ def default_deny():
 
 
 def allow_port(port, protocol='tcp'):
-    _allow(f'{port}/{protocol}')
+    _allow(f'{quote(port)}/{quote(protocol)}')
 
 
 def allow_app(app):
-    _allow(app)
+    _allow(quote(app))
 
 
 def allow_from(src):
-    _allow(f'from {src}')
+    _allow(f'from {quote(src)}')
 
 
 def _allow(cmd):
-    sudo(f'ufw allow {quote(cmd)}')
+    sudo(f'ufw allow {cmd}')
