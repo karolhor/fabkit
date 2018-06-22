@@ -48,13 +48,14 @@ class PacmanManager:
 
     def _run_manager(self, options, pkg, use_sudo=True):
         options = ' '.join(options)
+
         if pkg is None:
             pkg = ''
+        elif isinstance(pkg, str) and len(pkg) > 0:
+            pkg = quote(pkg)
+        elif isinstance(pkg, (list, tuple)):
+            pkg = ' '.join(map(quote, pkg))
 
-        if isinstance(pkg, (list, tuple)):
-            pkg = ' '.join(pkg)
-
-        pkg = quote(pkg)
         return self._execute(f'{options} {pkg}', use_sudo)
 
     def _execute(self, cmd, use_sudo):
