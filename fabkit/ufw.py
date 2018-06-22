@@ -20,7 +20,9 @@ def default_deny():
 
 
 def allow_port(port, protocol='tcp'):
-    _allow(f'{quote(port)}/{quote(protocol)}')
+    if not isinstance(port, int):
+        raise ValueError('[ufw] Port must be an integer')
+    _allow(f'{port}/{quote(protocol)}')
 
 
 def allow_app(app):
