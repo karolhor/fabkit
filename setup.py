@@ -12,6 +12,7 @@ setup(
     license=fabkit.__licence__,
     install_requires=[
         "fabric3>=1.7.0",
+        "jinja2"
     ],
     description='Group of tools extending fabric v1.x tasks',
     long_description=long_description,
