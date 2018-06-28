@@ -20,12 +20,26 @@ class SystemdService:
         """
         self._action('disable')
 
-    def is_running(self):
+    def is_active(self):
         """
-        Check if a service is running.
+        Check if a service is active.
         """
         with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
-            return self._action('status').succeeded
+            return self._action('is-active').succeeded
+
+    def is_failed(self):
+        """
+        Check if a service is active.
+        """
+        with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+            return self._action('is-failed').succeeded
+
+    def is_enabled(self):
+        """
+        Check if a service is active.
+        """
+        with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
+            return self._action('is-enabled').succeeded
 
     def start(self):
         """

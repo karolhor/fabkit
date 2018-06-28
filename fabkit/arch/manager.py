@@ -6,42 +6,48 @@ from fabkit.util import run_or_sudo, run_with_cmd_sudo
 
 
 class PacmanManager:
-    def upgrade_all(self, noconfirm=True):
-        options = ['-Su']
+    def upgrade_all(self, noconfirm=True, options=None):
+        args = ['-Su']
 
         if noconfirm:
-            options.append('--noconfirm')
+            args.append('--noconfirm')
 
-        self._run_manager(options, None)
+        options = options or []
+        args.extend(options)
+        self._run_manager(args, None)
 
     def is_installed(self, pkg):
         with settings(hide('running', 'stdout', 'stderr', 'warnings'), warn_only=True):
             res = self._run_manager(['-Q'], pkg, use_sudo=False)
             return res.succeeded
 
-    def install(self, pkg, update_index=False, noconfirm=True, needed=True):
+    def install(self, pkg, update_index=False, noconfirm=True, needed=True, options=None):
         if update_index:
             self.update_index()
 
-        options = ['-S']
+        args = ['-S']
 
         if noconfirm:
-            options.append('--noconfirm')
+            args.append('--noconfirm')
         if needed:
-            options.append('--needed')
+            args.append('--needed')
+        options = options or []
+        args.extend(options)
 
-        self._run_manager(options, pkg)
+        self._run_manager(args, pkg)
 
-    def uninstall(self, pkg, noconfirm=True):
-        options = ['-R']
+    def uninstall(self, pkg, noconfirm=True, options=None):
+        args = ['-R']
 
         if noconfirm:
-            options.append('--noconfirm')
+            args.append('--noconfirm')
+        options = options or []
+        args.extend(options)
 
-        self._run_manager(options, pkg)
+        self._run_manager(args, pkg)
 
-    def update(self, pkg, noconfirm=True):
-        pass
+    def update(self, pkg, update_index=False, noconfirm=True, needed=True, options=None):
+        self.install(pkg, update_index, noconfirm, needed, options)
 
     def update_index(self):
         self._run_manager(['-Sy'], None)
@@ -65,3 +71,16 @@ class PacmanManager:
 class AurmanManager(PacmanManager):
     def _execute(self, cmd, use_sudo):
         return run_with_cmd_sudo(f'aurman {cmd}')
+
+    def install(self, pkg, update_index=False, noconfirm=True, needed=True, options=None):
+        options = options or []
+        if noconfirm:
+            options.append('--noedit')
+
+        super().install(pkg, update_index, noconfirm, needed, options)
+
+    def upgrade_all(self, noconfirm=True, options=None):
+        options = options or []
+        if noconfirm:
+            options.append('--noedit')
+        super().upgrade_all(noconfirm, options)

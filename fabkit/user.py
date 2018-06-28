@@ -14,7 +14,7 @@ def exists(name):
         return run('getent passwd %(name)s' % locals()).succeeded
 
 
-def create(name: str, full_name: str = None, home_dir: str = None, create_home: bool = None, expire_date: date = None,
+def create(name: str, full_name: str = None, home_dir: str = None, create_home: bool = True, expire_date: date = None,
            inactive: int = None, group: str = None, other_groups: List[str] = None, system_account: bool = False,
            shell: str = None, password: str = None):
     """
@@ -42,11 +42,10 @@ def create(name: str, full_name: str = None, home_dir: str = None, create_home: 
         options.append(f'-c {quote(full_name)}')
     if home_dir:
         options.append(f'-d {quote(home_dir)}')
-    if create_home is not None:
-        if create_home:
-            options.append('-m')
-        else:
-            options.append('-M')
+    if create_home:
+        options.append('-m')
+    else:
+        options.append('-M')
     if expire_date:
         expiration_date = expire_date.strftime("%Y-%m-%d")
         options.append(f'-e {expiration_date}')

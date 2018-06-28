@@ -5,6 +5,7 @@ from shlex import quote
 from fabric.contrib.files import upload_template
 
 from fabkit.util import run_or_sudo
+from fabkit.files import mkdir
 
 
 class Template:
@@ -16,20 +17,19 @@ class Template:
     def __init__(self):
         self._params = {}
 
-    def upload(self):
-        self._upload(False)
+    def upload(self, dst=None):
+        self._upload(dst, False)
 
-    def upload_as_sudo(self):
-        self._upload(True)
+    def upload_as_sudo(self, dst=None):
+        self._upload(dst, True)
 
-    def _upload(self, use_sudo=False):
-        src_path = "/%s" % str(self.SRC_PATH.relative_to(self.__TEMPLATES_DIR__))
+    def _upload(self, dst, use_sudo=False):
+        src_path = str(self.SRC_PATH.relative_to(self.__TEMPLATES_DIR__))
 
-        dst_path = self.DST_PATH or src_path
+        dst_path = dst or self.DST_PATH or f'/{src_path}'
         dst_dir = os.path.dirname(dst_path)
 
-        run_or_sudo(f'mkdir -p {quote(dst_dir)}', use_sudo)
-
+        mkdir(dst_dir, parent=True, use_sudo=use_sudo)
         upload_template(src_path, dst_path,
                         use_jinja=True,
                         template_dir=str(self.__TEMPLATES_DIR__),
