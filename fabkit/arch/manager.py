@@ -84,3 +84,24 @@ class AurmanManager(PacmanManager):
         if noconfirm:
             options.append('--noedit')
         super().upgrade_all(noconfirm, options)
+
+
+class YayManager(PacmanManager):
+    def _execute(self, cmd, use_sudo):
+        return run_with_cmd_sudo(f'yay {cmd}')
+
+    def install(self, pkg, update_index=False, noconfirm=True, needed=True, options=None):
+        options = options or []
+        if noconfirm:
+            options.append('--nodiffmenu')
+            options.append('--noeditmenu')
+
+        super().install(pkg, update_index, noconfirm, needed, options)
+
+    def upgrade_all(self, noconfirm=True, options=None):
+        options = options or []
+        if noconfirm:
+            options.append('--nodiffmenu')
+            options.append('--noeditmenu')
+
+        super().upgrade_all(noconfirm, options)
